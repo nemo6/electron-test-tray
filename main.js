@@ -2,55 +2,84 @@ var { app, BrowserWindow, Tray, Menu } = require('electron')
 var path = require('path')
 var url = require('url')
 var iconpath = path.join(__dirname, 'icon.jpg') // path of y
-var win
 function createWindow() {
-    win = new BrowserWindow({ width: 600, height: 600, icon: iconpath })
+    
+    mainWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+      icon:iconpath,
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js')
+      },
+      show:false
+    })
 
-    win.loadURL(url.format({
+    mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
     }))
 
-    var appIcon = new Tray(iconpath)
+    var tray = new Tray(iconpath)
+
+    //
+
+ 	/*const template = [{
+ 	    label: 'File',
+ 	    submenu : [
+ 	    {
+			label: 'Exit', click : function () {
+			app.exit()
+        	}
+    	}
+ 	    ]
+ 	}]
+
+ 	const menu = Menu.buildFromTemplate(template)
+ 	Menu.setApplicationMenu(menu)*/
+
+    //
 
     var contextMenu = Menu.buildFromTemplate([
+
         {
             label: 'Show App', click: function () {
-                win.show()
+                mainWindow.show()
             }
         },
         {
             label: 'Quit', click: function () {
                 app.isQuiting = true
-                app.quit()
+                app.exit()
             }
         }
     ])
 
     hide = true
 
-    appIcon.setContextMenu(contextMenu)
+    tray.setContextMenu(contextMenu)
 
-    win.on('close', function (event) {
-        event.preventDefault()
-        hide=true
-        win.hide()
+    mainWindow.on('close', function (event) {
+        
+        app.exit()
+        // event.preventDefault()
+        // hide=true
+        // mainWindow.hide()
     })
 
-    win.on('minimize', function (event) {
+    mainWindow.on('minimize', function (event) {
         event.preventDefault()
         hide=true
-        win.hide()
+        mainWindow.hide()
     })
 
-	appIcon.on('click', function(event, bounds) {
+	tray.on('click', function(event, bounds) {
 		if(hide)
-		{win.show();hide=false}
+		{mainWindow.show();hide=false}
 		else
-		{win.hide();hide=true}
+		{mainWindow.hide();hide=true}
 	});
 
-    win.on('show', function () {
-       appIcon.setToolTip("Server Started")
+    mainWindow.on('show', function () {
+       tray.setToolTip("Server Started")
     })
 
 }
