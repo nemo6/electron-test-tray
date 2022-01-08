@@ -1,2 +1,2 @@
 # electron-test
-test
+electron@16.0.6
