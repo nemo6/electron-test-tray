@@ -1,7 +1,7 @@
 var { app, BrowserWindow, Tray, Menu } = require('electron')
 var path = require('path')
 var url = require('url')
-var iconpath = path.join(__dirname, 'icon.jpg') // path of y
+var iconpath = path.join(__dirname, 'icon.png') // path of y
 function createWindow() {
     
     mainWindow = new BrowserWindow({
